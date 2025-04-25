@@ -50,7 +50,8 @@ router.get('/getAll', async (req, res) => {
     res.status(500).json({ message: error.message })
     }
    })
-   router.patch('/update/:id', async (req, res) => {
+   
+router.patch('/update/:id', async (req, res) => {
     try {
     const id = req.params.id;
     const novaTarefa = req.body;
