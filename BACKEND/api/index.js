@@ -1,26 +1,21 @@
-const express = require('express'); // Importa o módulo Express.js para criar um servidor web.
-const app = express(); // Cria uma instância do aplicativo Express.
+const express = require('express');
+const mongoose = require('mongoose'); // Importe o Mongoose no início
+const app = express();
 
-// Middleware para configurar os cabeçalhos CORS (Cross-Origin Resource Sharing).
-//Um middleware é uma função intermediária que processa requisições antes que elas cheguem ao manipulador final (rota) 
-// ou antes que a resposta seja enviada ao cliente.
-// Isso permite que o servidor aceite solicitações de diferentes origens (domínios).
+// Middleware para configurar os cabeçalhos CORS
 app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*"); // Permite solicitações de qualquer origem.
-    res.setHeader('Access-Control-Allow-Methods', 'HEAD, GET, POST, PATCH, DELETE'); // Define os métodos HTTP permitidos.
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept" // Define os cabeçalhos permitidos.
-    );
-    next(); // Passa o controle para o próximo middleware.
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'HEAD, GET, POST, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
 });
 
-app.use(express.json()); // Middleware para analisar o corpo das solicitações como JSON.
+app.use(express.json());
 
-const PORT = process.env.PORT || 3000; // Define a porta do servidor, usando a variável de ambiente PORT ou 3000 como padrão.
+const PORT = process.env.PORT || 3000;
 
 // Conexão com MongoDB usando variável de ambiente
-const mongoURL = process.env.MONGO_URI; // Use variável de ambient
+const mongoURL = process.env.MONGO_URI;
 
 mongoose.connect(mongoURL, {
     useNewUrlParser: true,
@@ -29,34 +24,27 @@ mongoose.connect(mongoURL, {
     console.error('Erro ao conectar ao MongoDB:', error);
 });
 
-// Inicia o servidor e exibe uma mensagem no console.
-app.listen(PORT, () => {
-    console.log(`Server Started at ${PORT}`);
+mongoose.Promise = global.Promise; // Configura o Mongoose para usar Promises globais
+
+const db = mongoose.connection;
+db.on('error', (error) => {
+    console.error('Erro no banco de dados:', error);
+});
+db.once('connected', () => {
+    console.log('Database Connected');
 });
 
-// Depois - Importa o conjunto de rotas definidas no arquivo 'routes.js'
+// Rotas
 const routes = require('./routes/routes');
-
-// Depois - Define que todas as rotas dentro de 'routes.js' estarão acessíveis sob o prefixo '/api'
 app.use('/api', routes);
 
-// Obtém os argumentos passados pela linha de comando.
-var userArgs = process.argv.slice(2);
-// var mongoURL = userArgs[0]; // O primeiro argumento é a URL do MongoDB.
-
-// Configura a conexão com o banco de dados MongoDB usando Mongoose.
-var mongoose = require('mongoose'); // Importa o módulo Mongoose.
-mongoose.connect(mongoURL); // Conecta ao banco de dados usando a URL fornecida.
-mongoose.Promise = global.Promise; // Configura o Mongoose para usar as Promises globais.
-
-const db = mongoose.connection; // Obtém a conexão com o banco de dados.
-
-// Define um manipulador de eventos para erros de conexão com o banco de dados.
-db.on('error', (error) => {
-    console.log(error); // Exibe o erro no console.
+// Middleware de tratamento de erros
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Algo deu errado!' });
 });
 
-// Define um manipulador de eventos para quando a conexão com o banco de dados for estabelecida com sucesso.
-db.once('connected', () => {
-    console.log('Database Connected'); // Exibe uma mensagem de sucesso no console.
+// Iniciar o servidor
+app.listen(PORT, () => {
+    console.log(`Server Started at ${PORT}`);
 });
