@@ -5,8 +5,8 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "/dist/TODOapp",
-        "buildCommand": "cd FRONTEND/TODOapp && npx ng build"
+        "distDir": "/dist/TODOapp/browser",
+        "buildCommand":"npx ng build"
       }
     }
   ],
