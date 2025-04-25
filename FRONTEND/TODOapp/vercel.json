@@ -2,10 +2,10 @@
   "version": 2,
   "builds": [
     {
-      "src": "FRONTEND/TODOapp/package.json",
+      "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "FRONTEND/TODOapp/dist/TODOapp",
+        "distDir": "/dist/TODOapp",
         "buildCommand": "cd FRONTEND/TODOapp && npx ng build"
       }
     }
