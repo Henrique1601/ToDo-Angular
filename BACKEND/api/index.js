@@ -19,6 +19,16 @@ app.use(express.json()); // Middleware para analisar o corpo das solicitações 
 
 const PORT = process.env.PORT || 3000; // Define a porta do servidor, usando a variável de ambiente PORT ou 3000 como padrão.
 
+// Conexão com MongoDB usando variável de ambiente
+const mongoURL = process.env.MONGO_URI; // Use variável de ambient
+
+mongoose.connect(mongoURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).catch((error) => {
+    console.error('Erro ao conectar ao MongoDB:', error);
+});
+
 // Inicia o servidor e exibe uma mensagem no console.
 app.listen(PORT, () => {
     console.log(`Server Started at ${PORT}`);
@@ -32,7 +42,7 @@ app.use('/api', routes);
 
 // Obtém os argumentos passados pela linha de comando.
 var userArgs = process.argv.slice(2);
-var mongoURL = userArgs[0]; // O primeiro argumento é a URL do MongoDB.
+// var mongoURL = userArgs[0]; // O primeiro argumento é a URL do MongoDB.
 
 // Configura a conexão com o banco de dados MongoDB usando Mongoose.
 var mongoose = require('mongoose'); // Importa o módulo Mongoose.
