@@ -14,7 +14,7 @@ export class AppComponent {
   apiURL : string;
 
   constructor(private http: HttpClient) {
-    this.apiURL = 'https://to-do-angular-kappa.vercel.app/';
+    this.apiURL = 'https://to-do-angular-kappa.vercel.app';
     this.READ_tarefas();
   }
 
