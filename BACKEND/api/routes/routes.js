@@ -50,7 +50,11 @@ router.get('/getAll', async (req, res) => {
     res.status(500).json({ message: error.message })
     }
    })
-   
+
+router.get('/teste', (req, res) => {
+    res.json({ message: 'Rota funcionando!' });
+});
+
 router.patch('/update/:id', async (req, res) => {
     try {
     const id = req.params.id;
